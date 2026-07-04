@@ -18,6 +18,7 @@ export default function Dashboard() {
     <div style={{ padding: 40 }}>
       <h1>Dashboard</h1>
       <a href="/keys">Manage API Keys</a>
+      <a href="/usage">View Usage</a>
       <p>Logged in as: {session?.user?.email}</p>
       {account && <p>Account plan: {account.plan} | ID: {account.id}</p>}
       <button onClick={() => supabase.auth.signOut()}>Sign out</button>

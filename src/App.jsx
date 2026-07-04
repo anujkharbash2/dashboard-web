@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './lib/AuthContext';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ApiKeys from './pages/ApiKeys';
+import Usage from './pages/Usage';
 
 function ProtectedRoute({ children }) {
   const { session, loading } = useAuth();
@@ -16,6 +17,7 @@ function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/keys" element={<ProtectedRoute><ApiKeys /></ProtectedRoute>} />
+      <Route path="/usage" element={<ProtectedRoute><Usage /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/dashboard" />} />
     </Routes>
   );
