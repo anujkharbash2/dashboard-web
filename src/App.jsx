@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ApiKeys from './pages/ApiKeys';
 import Usage from './pages/Usage';
+import Quickstart from './pages/Quickstart';
 
 function ProtectedRoute({ children }) {
   const { session, loading } = useAuth();
@@ -18,6 +19,7 @@ function AppRoutes() {
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/keys" element={<ProtectedRoute><ApiKeys /></ProtectedRoute>} />
       <Route path="/usage" element={<ProtectedRoute><Usage /></ProtectedRoute>} />
+      <Route path="/quickstart" element={<Quickstart />} />
       <Route path="*" element={<Navigate to="/dashboard" />} />
     </Routes>
   );

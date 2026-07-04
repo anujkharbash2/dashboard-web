@@ -17,6 +17,7 @@ export default function Dashboard() {
   return (
     <div style={{ padding: 40 }}>
       <h1>Dashboard</h1>
+      <a href="/quickstart">Quickstart Guide</a> 
       <a href="/keys">Manage API Keys</a>
       <a href="/usage">View Usage</a>
       <p>Logged in as: {session?.user?.email}</p>
