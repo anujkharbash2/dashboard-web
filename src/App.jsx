@@ -1,17 +1,30 @@
-import { useEffect, useState } from 'react';
-import { supabase } from './lib/supabaseClient';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './lib/AuthContext';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+
+function ProtectedRoute({ children }) {
+  const { session, loading } = useAuth();
+  if (loading) return <p>Loading...</p>;
+  return session ? children : <Navigate to="/login" />;
+}
+
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+      <Route path="*" element={<Navigate to="/dashboard" />} />
+    </Routes>
+  );
+}
 
 function App() {
-  const [status, setStatus] = useState('checking...');
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data, error }) => {
-      if (error) setStatus('Error: ' + error.message);
-      else setStatus('Connected. Session: ' + (data.session ? 'active' : 'none (expected, not logged in yet)'));
-    });
-  }, []);
-
-  return <div style={{ padding: 40 }}><h1>DataRey Dashboard</h1><p>{status}</p></div>;
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
+  );
 }
 
 export default App;
