@@ -9,10 +9,14 @@ export default function Login() {
     e.preventDefault();
     setStatus('sending');
 
+
     const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: window.location.origin + '/dashboard' },
-    });
+  email,
+  options: {
+    emailRedirectTo: window.location.origin + '/dashboard',
+    shouldCreateUser: false, // invite-only: block auto-signup for unknown emails
+  },
+});
 
     if (error) {
       setStatus('error: ' + error.message);
@@ -24,7 +28,7 @@ export default function Login() {
   return (
     <div style={{ maxWidth: 400, margin: '80px auto', padding: 20 }}>
       <h1>DataRey</h1>
-      <p>Sign in with your email — no password needed.</p>
+      <p>Sign in with your email — invite-only during our pilot.</p>
       <form onSubmit={handleLogin}>
         <input
           type="email"
