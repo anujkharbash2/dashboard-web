@@ -7,6 +7,7 @@ export default function Dashboard() {
   const [account, setAccount] = useState(null);
 
   useEffect(() => {
+    
     if (!session) return;
     supabase.from('accounts').select('*').single().then(({ data, error }) => {
       if (error) console.error(error);
@@ -17,6 +18,7 @@ export default function Dashboard() {
   return (
     <div style={{ padding: 40 }}>
       <h1>Dashboard</h1>
+      <a href="/playground">Playground</a> <br />
       <a href="/quickstart">Quickstart Guide</a> 
       <a href="/keys">Manage API Keys</a>
       <a href="/usage">View Usage</a>
@@ -25,4 +27,5 @@ export default function Dashboard() {
       <button onClick={() => supabase.auth.signOut()}>Sign out</button>
     </div>
   );
+  
 }
