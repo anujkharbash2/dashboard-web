@@ -6,11 +6,14 @@ import ApiKeys from './pages/ApiKeys';
 import Usage from './pages/Usage';
 import Quickstart from './pages/Quickstart';
 import Playground from './pages/Playground';
+import { AppShell } from './components/app-shell';
+import Collections from './pages/Collections';
 
 function ProtectedRoute({ children }) {
   const { session, loading } = useAuth();
-  if (loading) return <p>Loading...</p>;
-  return session ? children : <Navigate to="/login" />;
+  if (loading) return <p className="p-6 text-sm text-muted-foreground">Loading…</p>;
+  if (!session) return <Navigate to="/login" />;
+  return <AppShell>{children}</AppShell>;
 }
 
 function AppRoutes() {
@@ -22,6 +25,8 @@ function AppRoutes() {
       <Route path="/usage" element={<ProtectedRoute><Usage /></ProtectedRoute>} />
       <Route path="/quickstart" element={<Quickstart />} />
       <Route path="/playground" element={<ProtectedRoute><Playground /></ProtectedRoute>} />
+      <Route path="/collections" element={<ProtectedRoute><Collections /></ProtectedRoute>} />
+      <Route path="/collections" element={<ProtectedRoute><Collections /></ProtectedRoute>} />
 
       <Route path="*" element={<Navigate to="/dashboard" />} />
     </Routes>
