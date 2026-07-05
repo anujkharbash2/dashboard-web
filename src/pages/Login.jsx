@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -9,41 +12,47 @@ export default function Login() {
     e.preventDefault();
     setStatus('sending');
 
-
     const { error } = await supabase.auth.signInWithOtp({
-  email,
-  options: {
-    emailRedirectTo: window.location.origin + '/dashboard',
-    shouldCreateUser: false, // invite-only: block auto-signup for unknown emails
-  },
-});
+      email,
+      options: {
+        emailRedirectTo: window.location.origin + '/dashboard',
+        shouldCreateUser: false,
+      },
+    });
 
-    if (error) {
-      setStatus('error: ' + error.message);
-    } else {
-      setStatus('sent');
-    }
+    setStatus(error ? 'error: ' + error.message : 'sent');
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: '80px auto', padding: 20 }}>
-      <h1>DataRey</h1>
-      <p>Sign in with your email — invite-only during our pilot.</p>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="you@company.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={{ width: '100%', padding: 10, marginBottom: 10 }}
-        />
-        <button type="submit" disabled={status === 'sending'} style={{ width: '100%', padding: 10 }}>
-          {status === 'sending' ? 'Sending...' : 'Send magic link'}
-        </button>
-      </form>
-      {status === 'sent' && <p>Check your email for a sign-in link.</p>}
-      {status?.startsWith('error') && <p style={{ color: 'red' }}>{status}</p>}
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <Card className="w-full max-w-sm">
+        <CardContent className="p-6">
+          <p className="font-medium text-center mb-1">DataRey</p>
+          <p className="text-sm text-muted-foreground text-center mb-6">
+            Sign in with your email — invite-only during our pilot.
+          </p>
+          <form onSubmit={handleLogin} className="space-y-3">
+            <Input
+              type="email"
+              placeholder="you@company.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <Button type="submit" className="w-full" disabled={status === 'sending'}>
+              {status === 'sending' ? 'Sending...' : 'Send magic link'}
+            </Button>
+          </form>
+          {status === 'sent' && (
+            <p className="text-sm text-center text-muted-foreground mt-4">
+              Check your email for a sign-in link.
+            </p>
+          )}
+          {status?.startsWith('error') && (
+            <p className="text-sm text-center text-destructive mt-4">{status}</p>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

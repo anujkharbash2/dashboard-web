@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { Card, CardContent } from '@/components/ui/card';
 
 const GATEWAY_URL = 'http://localhost:3000';
 
@@ -17,40 +18,55 @@ export default function Usage() {
     load();
   }, []);
 
-  if (!usage) return <p style={{ padding: 40 }}>Loading...</p>;
+  if (!usage) return <p className="text-sm text-muted-foreground">Loading...</p>;
 
   const percentUsed = usage.quota === Infinity ? 0 : Math.round((usage.used / usage.quota) * 100);
 
   return (
-    <div style={{ padding: 40 }}>
-      <h1>Usage</h1>
-      <p>Plan: <strong>{usage.plan}</strong></p>
-      <p>
-        {usage.used} / {usage.quota === Infinity ? 'Unlimited' : usage.quota} credits used this month
-      </p>
-      {usage.quota !== Infinity && (
-        <div style={{ background: '#eee', height: 10, borderRadius: 5, overflow: 'hidden', width: 300 }}>
-          <div style={{ width: `${percentUsed}%`, background: percentUsed > 90 ? '#e74c3c' : '#3498db', height: '100%' }} />
-        </div>
-      )}
+    <div className="max-w-2xl">
+      <h1 className="text-lg font-medium mb-6">Usage</h1>
 
-      <h2 style={{ marginTop: 30 }}>Recent requests</h2>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr><th>URL</th><th>Type</th><th>Status</th><th>Cached</th><th>When</th></tr>
-        </thead>
-        <tbody>
-          {usage.recentRequests.map(r => (
-            <tr key={r.request_id}>
-              <td>{r.url}</td>
-              <td>{r.page_type || '—'}</td>
-              <td style={{ color: r.fetch_status_code === 200 ? 'green' : 'red' }}>{r.fetch_status_code || 'error'}</td>
-              <td>{r.cached ? 'Yes' : 'No'}</td>
-              <td>{new Date(r.created_at).toLocaleString()}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Card className="mb-6">
+        <CardContent className="p-5">
+          <div className="flex items-baseline justify-between mb-3">
+            <p className="text-sm text-muted-foreground capitalize">{usage.plan} plan</p>
+            <p className="text-sm">
+              <span className="font-medium">{usage.used}</span>
+              <span className="text-muted-foreground"> / {usage.quota === Infinity ? 'Unlimited' : usage.quota} credits</span>
+            </p>
+          </div>
+          {usage.quota !== Infinity && (
+            <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+              <div
+                className={`h-full ${percentUsed > 90 ? 'bg-destructive' : 'bg-foreground'}`}
+                style={{ width: `${percentUsed}%` }}
+              />
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <p className="text-xs text-muted-foreground mb-2">Recent requests</p>
+      <Card>
+        <CardContent className="p-0">
+          {usage.recentRequests?.length ? (
+            usage.recentRequests.map((r) => (
+              <div key={r.request_id} className="flex items-center justify-between px-4 py-2.5 text-sm border-b last:border-0">
+                <span className="truncate max-w-[300px]">{r.url}</span>
+                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                  <span className="capitalize">{r.page_type || '—'}</span>
+                  <span className={r.fetch_status_code === 200 ? 'text-green-600' : 'text-destructive'}>
+                    {r.fetch_status_code || 'error'}
+                  </span>
+                  <span>{r.cached ? 'cached' : 'fresh'}</span>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="px-4 py-8 text-sm text-muted-foreground text-center">No requests yet.</p>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
