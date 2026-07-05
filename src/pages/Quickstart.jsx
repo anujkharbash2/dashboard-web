@@ -1,22 +1,80 @@
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { Key, PlayCircle, Code2, ArrowRight } from 'lucide-react';
+
 export default function Quickstart() {
   return (
-    <div style={{ padding: 40, maxWidth: 700 }}>
-      <h1>Get started in 5 minutes</h1>
+    <div className="max-w-2xl mx-auto py-10 px-4">
+      <h1 className="text-2xl font-medium mb-2">Get started in 5 minutes</h1>
+      <p className="text-muted-foreground mb-10">
+        Two ways to use DataRey — pick whichever fits how you work.
+      </p>
 
-      <h2>1. Get your API key</h2>
-      <p>Go to <a href="/keys">API Keys</a> and click "Create new key". Copy it now — it's only shown once.</p>
+      {/* Two paths */}
+      <div className="grid sm:grid-cols-2 gap-3 mb-10">
+        <Card>
+          <CardContent className="p-4">
+            <PlayCircle className="size-5 mb-2 text-muted-foreground" />
+            <p className="font-medium text-sm mb-1">No code — use the Playground</p>
+            <p className="text-xs text-muted-foreground mb-3">
+              Paste a URL, see the extracted data instantly, save it to a collection.
+            </p>
+            <Button variant="outline" size="sm" asChild={false} onClick={() => window.location.href = '/playground'}>
+              Open Playground <ArrowRight className="size-3.5 ml-1" />
+            </Button>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <Code2 className="size-5 mb-2 text-muted-foreground" />
+            <p className="font-medium text-sm mb-1">Code — use the API</p>
+            <p className="text-xs text-muted-foreground mb-3">
+              Call <code>/v1/extract</code> from your own app, script, or pipeline.
+            </p>
+            <Button variant="outline" size="sm" onClick={() => window.location.href = '/keys'}>
+              Get an API key <ArrowRight className="size-3.5 ml-1" />
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
 
-      <h2>2. Make your first call</h2>
-      <p>Try extracting a product or article page:</p>
+      {/* Step 1 */}
+      <section className="mb-8">
+        <div className="flex items-center gap-2 mb-2">
+          <Badge variant="secondary">1</Badge>
+          <h2 className="font-medium">Get your API key</h2>
+        </div>
+        <p className="text-sm text-muted-foreground ml-7">
+          Go to <a href="/keys" className="underline">API keys</a> and create one.
+          Copy it now — it's only shown once.
+        </p>
+      </section>
 
-      <h3>curl</h3>
-      <pre style={codeBlockStyle}>{`curl -X POST https://api.datarey.com/v1/extract \\
+      {/* Step 2 - code tabs */}
+      <section className="mb-8">
+        <div className="flex items-center gap-2 mb-3">
+          <Badge variant="secondary">2</Badge>
+          <h2 className="font-medium">Make your first call</h2>
+        </div>
+        <Tabs defaultValue="curl" className="ml-7">
+          <TabsList>
+            <TabsTrigger value="curl">curl</TabsTrigger>
+            <TabsTrigger value="node">Node.js</TabsTrigger>
+            <TabsTrigger value="python">Python</TabsTrigger>
+          </TabsList>
+          <TabsContent value="curl">
+            <pre className="bg-neutral-950 text-neutral-200 rounded-md p-4 text-xs overflow-x-auto">
+{`curl -X POST https://api.datarey.com/v1/extract \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
-  -d '{"url": "https://example.com/some-article"}'`}</pre>
-
-      <h3>Node.js</h3>
-      <pre style={codeBlockStyle}>{`const res = await fetch('https://api.datarey.com/v1/extract', {
+  -d '{"url": "https://example.com/some-article"}'`}
+            </pre>
+          </TabsContent>
+          <TabsContent value="node">
+            <pre className="bg-neutral-950 text-neutral-200 rounded-md p-4 text-xs overflow-x-auto">
+{`const res = await fetch('https://api.datarey.com/v1/extract', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer YOUR_API_KEY',
@@ -25,48 +83,81 @@ export default function Quickstart() {
   body: JSON.stringify({ url: 'https://example.com/some-article' }),
 });
 const data = await res.json();
-console.log(data);`}</pre>
-
-      <h3>Python</h3>
-      <pre style={codeBlockStyle}>{`import requests
+console.log(data);`}
+            </pre>
+          </TabsContent>
+          <TabsContent value="python">
+            <pre className="bg-neutral-950 text-neutral-200 rounded-md p-4 text-xs overflow-x-auto">
+{`import requests
 
 response = requests.post(
     "https://api.datarey.com/v1/extract",
     headers={"Authorization": "Bearer YOUR_API_KEY"},
     json={"url": "https://example.com/some-article"},
 )
-print(response.json())`}</pre>
+print(response.json())`}
+            </pre>
+          </TabsContent>
+        </Tabs>
+      </section>
 
-      <h2>3. Understand the response</h2>
-      <p>You'll get back structured fields depending on page type:</p>
-      <ul>
-        <li><strong>page_type</strong> — "product", "article", or "other"</li>
-        <li><strong>fields</strong> — the extracted data (title, price, author, etc.)</li>
-        <li><strong>cached</strong> — whether this was served from cache (doesn't consume a credit)</li>
-      </ul>
+      {/* Step 3 - response shape */}
+      <section className="mb-8">
+        <div className="flex items-center gap-2 mb-3">
+          <Badge variant="secondary">3</Badge>
+          <h2 className="font-medium">Understand the response</h2>
+        </div>
+        <div className="ml-7 space-y-2">
+          {[
+            ['request_id', 'unique ID for this call, useful for support and idempotency'],
+            ['page_type', '"product", "article", or "other"'],
+            ['confidence', 'how sure we are about the page_type, 0 to 1'],
+            ['extraction_method', '"json_ld", "open_graph", "fallback", or "none"'],
+            ['fields', 'the actual extracted data — shape depends on page_type'],
+            ['cached', 'true if served from cache — doesn\'t consume a credit'],
+          ].map(([key, desc]) => (
+            <div key={key} className="flex items-start gap-3 text-sm">
+              <code className="shrink-0 bg-muted px-1.5 py-0.5 rounded text-xs">{key}</code>
+              <span className="text-muted-foreground">{desc}</span>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      <h2>Common errors</h2>
-      <table style={{ width: '100%', marginTop: 10 }}>
-        <thead><tr><th>Code</th><th>Meaning</th><th>Fix</th></tr></thead>
-        <tbody>
-          <tr><td>401</td><td>Invalid/missing API key</td><td>Check your Authorization header</td></tr>
-          <tr><td>429</td><td>Rate limit or quota exceeded</td><td>Check the Retry-After header, or your usage page</td></tr>
-          <tr><td>502</td><td>Upstream fetch/extraction failure</td><td>The target site may be blocking bots — try a different URL</td></tr>
-        </tbody>
-      </table>
+      {/* Step 4 - errors */}
+      <section className="mb-8">
+        <div className="flex items-center gap-2 mb-3">
+          <Badge variant="secondary">4</Badge>
+          <h2 className="font-medium">Common errors</h2>
+        </div>
+        <Card className="ml-7">
+          <CardContent className="p-0">
+            {[
+              ['401', 'Invalid or missing API key', 'Check your Authorization header'],
+              ['429', 'Rate limit or monthly quota exceeded', 'Check Retry-After header, or your Usage page'],
+              ['502 · FETCH', 'Could not fetch the URL', 'Target may block bots, use robots.txt, or be down — check the error field: TIMEOUT, BLOCKED, CAPTCHA, DNS_FAIL, ROBOTS_DISALLOWED'],
+              ['502 · EXTRACT', 'Fetched fine, but extraction failed', 'Page may have unusual structure — try the Playground to inspect it'],
+            ].map(([code, meaning, fix]) => (
+              <div key={code} className="px-4 py-3 text-sm border-b last:border-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{code}</code>
+                  <span className="font-medium">{meaning}</span>
+                </div>
+                <p className="text-xs text-muted-foreground">{fix}</p>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </section>
 
-      <p style={{ marginTop: 30 }}>
-        Full interactive API reference: <a href="http://localhost:3000/docs" target="_blank" rel="noreferrer">API Docs</a>
-      </p>
+      <div className="border-t pt-6">
+        <p className="text-sm text-muted-foreground">
+          Full interactive API reference:{' '}
+          <a href="http://localhost:3000/docs" target="_blank" rel="noreferrer" className="underline">
+            Swagger docs
+          </a>
+        </p>
+      </div>
     </div>
   );
 }
-
-const codeBlockStyle = {
-  background: '#1e1e1e',
-  color: '#d4d4d4',
-  padding: 15,
-  borderRadius: 5,
-  overflowX: 'auto',
-  fontSize: 14,
-};
