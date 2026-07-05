@@ -9,7 +9,7 @@ import Playground from './pages/Playground';
 import { AppShell } from './components/app-shell';
 import Collections from './pages/Collections';
 import Entities from './pages/Entities';
-
+import Mentions from './pages/Mentions';
 function ProtectedRoute({ children }) {
   const { session, loading } = useAuth();
   if (loading) return <p className="p-6 text-sm text-muted-foreground">Loading…</p>;
@@ -28,8 +28,9 @@ function AppRoutes() {
       <Route path="/playground" element={<ProtectedRoute><Playground /></ProtectedRoute>} />
       <Route path="/collections" element={<ProtectedRoute><Collections /></ProtectedRoute>} />
       <Route path="/entities" element={<ProtectedRoute><Entities /></ProtectedRoute>} />
-
-      <Route path="*" element={<Navigate to="/dashboard" />} />
+      <Route path="/mentions" element={<ProtectedRoute><Mentions /></ProtectedRoute>} />
+      <Route path="*" element={<Navigate to="/mentions" />} /> 
+      {/* // Root path now redirects to /mentions instead of /dashboard, since Mentions // is the new specified default landing screen for this product. */}
     </Routes>
   );
 }
