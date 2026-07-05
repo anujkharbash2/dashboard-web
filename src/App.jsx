@@ -8,6 +8,7 @@ import Quickstart from './pages/Quickstart';
 import Playground from './pages/Playground';
 import { AppShell } from './components/app-shell';
 import Collections from './pages/Collections';
+import Entities from './pages/Entities';
 
 function ProtectedRoute({ children }) {
   const { session, loading } = useAuth();
@@ -26,7 +27,7 @@ function AppRoutes() {
       <Route path="/quickstart" element={<Quickstart />} />
       <Route path="/playground" element={<ProtectedRoute><Playground /></ProtectedRoute>} />
       <Route path="/collections" element={<ProtectedRoute><Collections /></ProtectedRoute>} />
-      <Route path="/collections" element={<ProtectedRoute><Collections /></ProtectedRoute>} />
+      <Route path="/entities" element={<ProtectedRoute><Entities /></ProtectedRoute>} />
 
       <Route path="*" element={<Navigate to="/dashboard" />} />
     </Routes>

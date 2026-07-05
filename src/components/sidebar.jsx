@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, PlayCircle, Key, BarChart3, Folder } from 'lucide-react';
+import { LayoutDashboard, PlayCircle, Key, BarChart3, Folder,Building2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -8,6 +8,7 @@ const navItems = [
   { to: '/keys', label: 'API keys', icon: Key },
   { to: '/usage', label: 'Usage', icon: BarChart3 },
   { to: '/collections', label: 'Collections', icon: Folder },
+  { to: '/entities', label: 'Entities', icon: Building2 },
 ];
 
 export function Sidebar() {
